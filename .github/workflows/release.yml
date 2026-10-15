@@ -1,0 +1,55 @@
+# Push a tag like v0.2.0 to build the plugin, publish latest.zip as a GitHub release,
+# and update repo.json on main so the custom repository serves the new version.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Download Dalamud dev files
+        shell: pwsh
+        run: |
+          $dir = Join-Path $env:RUNNER_TEMP "dalamud"
+          Invoke-WebRequest https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile "$dir.zip"
+          Expand-Archive "$dir.zip" -DestinationPath $dir
+          "DALAMUD_HOME=$dir" >> $env:GITHUB_ENV
+
+      - name: Build
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart("v")
+          dotnet build TargetHighlight.sln -c Release -p:Version=$version
+
+      - name: Publish release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" bin/x64/Release/TargetHighlight/latest.zip `
+            --title "TargetHighlight ${{ github.ref_name }}" --generate-notes
+
+      - name: Update repo.json on main
+        shell: pwsh
+        run: |
+          git checkout main
+          python scripts/update_repo_json.py "${{ github.ref_name }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add repo.json
+          git commit -m "Update repo.json for ${{ github.ref_name }}"
+          git push origin main

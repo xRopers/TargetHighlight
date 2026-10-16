@@ -12,6 +12,7 @@ REPO = "xRopers/TargetHighlight"
 ROOT = Path(__file__).resolve().parent.parent
 MANIFEST = ROOT / "bin" / "x64" / "Release" / "TargetHighlight" / "TargetHighlight.json"
 REPO_JSON = ROOT / "repo.json"
+ICON_URL = f"https://raw.githubusercontent.com/{REPO}/main/images/icon.png"
 
 # Manifest keys copied as-is into the store entry.
 KEYS = [
@@ -30,6 +31,7 @@ def main() -> None:
 
     entry = {key: manifest[key] for key in KEYS if key in manifest}
     entry.update({
+        "IconUrl": ICON_URL,
         "TestingAssemblyVersion": None,
         "IsHide": False,
         "IsTestingExclusive": False,

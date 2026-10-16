@@ -20,6 +20,7 @@
     "Punchline": "Recolour or remove the flash when you target something.",
     "LoadPriority": 0,
     "AcceptsFeedback": true,
+    "IconUrl": "https://raw.githubusercontent.com/xRopers/TargetHighlight/main/images/icon.png",
     "TestingAssemblyVersion": null,
     "IsHide": false,
     "IsTestingExclusive": false,

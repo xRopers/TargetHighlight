@@ -3,8 +3,8 @@
     "Author": "xRopers",
     "Name": "TargetHighlight",
     "InternalName": "TargetHighlight",
-    "AssemblyVersion": "0.1.1.0",
-    "Description": "Changes the brightness flash the game plays on a character or NPC model when you target it. Turn it off, keep the game's flash, or replace it with your own colour, intensity and fade, with an option to hold the colour for as long as the object stays targeted.\n\nThis changes the target flash, not the coloured outline highlight. Purely cosmetic and client-side.\n\nCommands: /targethighlight (settings), /targethighlight none|default|custom|preview",
+    "AssemblyVersion": "0.1.2.0",
+    "Description": "Changes the brightness flash the game plays on a character or NPC model when you target it. Turn it off, keep the game's flash, or replace it with your own colour, intensity and fade, with an option to hold the colour for as long as the object stays targeted.\n\nThis changes the target flash, not the coloured outline highlight. Purely cosmetic and client-side.\n\nCommands: /targethighlight (settings), /targethighlight none|default|custom|preview\n\nThe plugin icon was created with AI assistance.",
     "ApplicableVersion": "any",
     "RepoUrl": "https://github.com/xRopers/TargetHighlight",
     "IconUrl": "https://raw.githubusercontent.com/xRopers/TargetHighlight/main/images/icon.png",
@@ -24,9 +24,9 @@
     "TestingAssemblyVersion": null,
     "IsHide": false,
     "IsTestingExclusive": false,
-    "DownloadLinkInstall": "https://github.com/xRopers/TargetHighlight/releases/download/v0.1.1/latest.zip",
-    "DownloadLinkUpdate": "https://github.com/xRopers/TargetHighlight/releases/download/v0.1.1/latest.zip",
-    "DownloadLinkTesting": "https://github.com/xRopers/TargetHighlight/releases/download/v0.1.1/latest.zip",
-    "LastUpdate": "1792113211"
+    "DownloadLinkInstall": "https://github.com/xRopers/TargetHighlight/releases/download/v0.1.2/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/xRopers/TargetHighlight/releases/download/v0.1.2/latest.zip",
+    "DownloadLinkTesting": "https://github.com/xRopers/TargetHighlight/releases/download/v0.1.2/latest.zip",
+    "LastUpdate": "1792114307"
   }
 ]

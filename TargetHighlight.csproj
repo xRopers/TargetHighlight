@@ -1,6 +1,6 @@
 <Project Sdk="Dalamud.NET.Sdk/15.0.0">
   <PropertyGroup>
-    <Version>0.1.1.0</Version>
+    <Version>0.1.2.0</Version>
     <Description>Recolour or remove the flash when you target something.</Description>
     <PackageProjectUrl>https://github.com/xRopers/TargetHighlight</PackageProjectUrl>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>

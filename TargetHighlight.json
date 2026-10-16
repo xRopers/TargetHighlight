@@ -2,7 +2,7 @@
   "Author": "xRopers",
   "Name": "TargetHighlight",
   "Punchline": "Recolour or remove the flash when you target something.",
-  "Description": "Changes the brightness flash the game plays on a character or NPC model when you target it. Turn it off, keep the game's flash, or replace it with your own colour, intensity and fade, with an option to hold the colour for as long as the object stays targeted.\n\nThis changes the target flash, not the coloured outline highlight. Purely cosmetic and client-side.\n\nCommands: /targethighlight (settings), /targethighlight none|default|custom|preview",
+  "Description": "Changes the brightness flash the game plays on a character or NPC model when you target it. Turn it off, keep the game's flash, or replace it with your own colour, intensity and fade, with an option to hold the colour for as long as the object stays targeted.\n\nThis changes the target flash, not the coloured outline highlight. Purely cosmetic and client-side.\n\nCommands: /targethighlight (settings), /targethighlight none|default|custom|preview\n\nThe plugin icon was created with AI assistance.",
   "RepoUrl": "https://github.com/xRopers/TargetHighlight",
   "IconUrl": "https://raw.githubusercontent.com/xRopers/TargetHighlight/main/images/icon.png",
   "ApplicableVersion": "any",

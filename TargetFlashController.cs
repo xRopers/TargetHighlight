@@ -4,7 +4,6 @@ using System.Linq;
 using System.Numerics;
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 
 namespace TargetHighlight;
@@ -280,8 +279,8 @@ public sealed unsafe class TargetFlashController : IDisposable
         return false;
     }
 
-    private static nint DrawObjectOf(nint gameObject) =>
-        gameObject == 0 ? 0 : (nint)((GameObject*)gameObject)->DrawObject;
+    // Only character models have a Tint; everything below works on these and nothing else.
+    private static nint DrawObjectOf(nint gameObject) => GameObjects.CharacterModelOf(gameObject);
 
     private static Vector4 ReadTint(nint drawObject) => ((CharacterBase*)drawObject)->Tint;
 

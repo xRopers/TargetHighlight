@@ -6,17 +6,21 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
+using Character = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
 namespace TargetHighlight;
 
 /// <summary>
 /// Diagnostic: when the target changes, snapshots the target's GameObject and DrawObject memory every frame,
 /// then reports the fields that briefly move away from their settled value (what a flash looks like).
+/// Only character targets are recorded, and only their ClientStructs struct sizes are read, so it never reads past
+/// the end of a smaller object.
 /// </summary>
 public sealed unsafe class FlashRecorder : IDisposable
 {
-    private const int GameObjectSize = 0x2400;
-    private const int DrawObjectSize = 0xA00;
+    private static readonly int GameObjectSize = sizeof(Character);
+    private static readonly int DrawObjectSize = sizeof(CharacterBase);
     private const int FrameCount = 120;
 
     private readonly string outputPath;
@@ -63,6 +67,13 @@ public sealed unsafe class FlashRecorder : IDisposable
         }
         else if (Armed && target != 0 && target != lastTarget)
         {
+            if (!((GameObject*)target)->IsCharacter() || DrawObjectOf(target) == 0)
+            {
+                Status = $"Skipped {Plugin.TargetManager.Target?.Name}: not a character.";
+                lastTarget = target;
+                return;
+            }
+
             recordingTarget = target;
             recordingDrawObject = DrawObjectOf(target);
             Status = $"Recording {Plugin.TargetManager.Target?.Name}...";
@@ -81,7 +92,7 @@ public sealed unsafe class FlashRecorder : IDisposable
             : new byte[DrawObjectSize]);
     }
 
-    private static nint DrawObjectOf(nint gameObject) => (nint)((GameObject*)gameObject)->DrawObject;
+    private static nint DrawObjectOf(nint gameObject) => GameObjects.CharacterModelOf(gameObject);
 
     private static byte[] Read(nint address, int size)
     {

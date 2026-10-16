@@ -479,6 +479,9 @@ public sealed class ConfigWindow : Window
             ImGui.TextColored(new Vector4(0.45f, 0.9f, 0.5f, 1f), "active");
         else
             ImGui.TextColored(Warning, "not active");
+        ImGui.TextColored(Muted, "Found via");
+        ImGui.SameLine();
+        ImGui.TextUnformatted(plugin.Controller.HookSource);
     }
 
     private static void SectionHeader(string title)

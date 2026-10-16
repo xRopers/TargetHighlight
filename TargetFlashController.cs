@@ -2,26 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 
 namespace TargetHighlight;
 
 /// <summary>
 /// When something is targeted, the game sets the model's CharacterBase.Tint RGB to 10 and eases it back to 1 over
-/// ~40 frames (the shader squares Tint into MulColor). Every Tint write goes through CharacterBase.SetTint (vf24),
+/// ~40 frames (the shader squares Tint into MulColor). Every Tint write goes through CharacterBase.SetTint,
 /// so this hooks that to either block the flash or replace it with a custom colour and fade.
+/// Addresses and offsets come from ClientStructs (see <see cref="SetTintResolver"/>) so game patches don't break it.
 /// </summary>
 public sealed unsafe class TargetFlashController : IDisposable
 {
-    // CharacterBase.SetTint(this, Vector4* tint): movups xmm0,[rdx]; movups [rcx+290h],xmm0; ret
-    // 2026.10.06: 0x140432360
-    private const string SetTintSignature = "0F 10 02 0F 11 81 90 02 00 00 C3";
-
-    private const int DrawObjectOffset = 0x100; // GameObject.DrawObject
-    private const int TintOffset = 0x290;       // CharacterBase.Tint
-
     // The flash lasts ~40 frames; keep covering a model for a while after it stops being the target
     // so switching targets quickly doesn't let the old target's flash finish.
     private static readonly TimeSpan RecentTargetWindow = TimeSpan.FromSeconds(3);
@@ -48,18 +43,31 @@ public sealed unsafe class TargetFlashController : IDisposable
 
     public bool HookActive => hook is { IsEnabled: true };
 
+    /// <summary>Where SetTint was found, shown in the Diagnostics tab.</summary>
+    public string HookSource { get; } = "not found";
+
     public TargetFlashController(Configuration configuration)
     {
         this.configuration = configuration;
 
         try
         {
-            hook = Plugin.GameInterop.HookFromSignature<SetTintDelegate>(SetTintSignature, SetTintDetour);
-            hook.Enable();
+            var (address, source) = SetTintResolver.Resolve();
+            HookSource = source;
+            if (address != 0)
+            {
+                hook = Plugin.GameInterop.HookFromAddress<SetTintDelegate>(address, SetTintDetour);
+                hook.Enable();
+                Plugin.Log.Information($"Hooked CharacterBase.SetTint at 0x{address:X} ({source})");
+            }
+            else
+            {
+                Plugin.Log.Error($"Could not find CharacterBase.SetTint ({source}); the game may have been patched.");
+            }
         }
         catch (Exception ex)
         {
-            Plugin.Log.Error(ex, "Could not find CharacterBase.SetTint; the game may have been patched.");
+            Plugin.Log.Error(ex, "Could not hook CharacterBase.SetTint; the game may have been patched.");
         }
 
         Plugin.Framework.Update += OnUpdate;
@@ -273,9 +281,9 @@ public sealed unsafe class TargetFlashController : IDisposable
     }
 
     private static nint DrawObjectOf(nint gameObject) =>
-        gameObject == 0 ? 0 : Marshal.ReadIntPtr(gameObject + DrawObjectOffset);
+        gameObject == 0 ? 0 : (nint)((GameObject*)gameObject)->DrawObject;
 
-    private static Vector4 ReadTint(nint drawObject) => *(Vector4*)(drawObject + TintOffset);
+    private static Vector4 ReadTint(nint drawObject) => ((CharacterBase*)drawObject)->Tint;
 
     private void WriteTint(nint drawObject, Vector4 tint) => hook?.Original(drawObject, &tint);
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 
 namespace TargetHighlight;
 
@@ -12,12 +13,11 @@ namespace TargetHighlight;
 /// Diagnostic: when the target changes, snapshots the target's GameObject and DrawObject memory every frame,
 /// then reports the fields that briefly move away from their settled value (what a flash looks like).
 /// </summary>
-public sealed class FlashRecorder : IDisposable
+public sealed unsafe class FlashRecorder : IDisposable
 {
     private const int GameObjectSize = 0x2400;
     private const int DrawObjectSize = 0xA00;
     private const int FrameCount = 120;
-    private const int DrawObjectOffset = 0x100;
 
     private readonly string outputPath;
     private readonly List<byte[]> gameObjectFrames = [];
@@ -64,7 +64,7 @@ public sealed class FlashRecorder : IDisposable
         else if (Armed && target != 0 && target != lastTarget)
         {
             recordingTarget = target;
-            recordingDrawObject = Marshal.ReadIntPtr(target + DrawObjectOffset);
+            recordingDrawObject = DrawObjectOf(target);
             Status = $"Recording {Plugin.TargetManager.Target?.Name}...";
             Capture();
         }
@@ -75,11 +75,13 @@ public sealed class FlashRecorder : IDisposable
     private void Capture()
     {
         gameObjectFrames.Add(Read(recordingTarget, GameObjectSize));
-        var drawObject = Marshal.ReadIntPtr(recordingTarget + DrawObjectOffset);
+        var drawObject = DrawObjectOf(recordingTarget);
         drawObjectFrames.Add(drawObject == recordingDrawObject && drawObject != 0
             ? Read(drawObject, DrawObjectSize)
             : new byte[DrawObjectSize]);
     }
+
+    private static nint DrawObjectOf(nint gameObject) => (nint)((GameObject*)gameObject)->DrawObject;
 
     private static byte[] Read(nint address, int size)
     {

@@ -17,7 +17,7 @@ ICON_URL = f"https://raw.githubusercontent.com/{REPO}/main/images/icon.png"
 # Manifest keys copied as-is into the store entry.
 KEYS = [
     "Author", "Name", "InternalName", "AssemblyVersion", "Description", "ApplicableVersion",
-    "RepoUrl", "Tags", "DalamudApiLevel", "Punchline", "LoadPriority", "AcceptsFeedback",
+    "RepoUrl", "IconUrl", "Tags", "DalamudApiLevel", "Punchline", "LoadPriority", "AcceptsFeedback",
 ]
 
 
@@ -30,8 +30,8 @@ def main() -> None:
     download = f"https://github.com/{REPO}/releases/download/{tag}/latest.zip"
 
     entry = {key: manifest[key] for key in KEYS if key in manifest}
+    entry.setdefault("IconUrl", ICON_URL)
     entry.update({
-        "IconUrl": ICON_URL,
         "TestingAssemblyVersion": None,
         "IsHide": False,
         "IsTestingExclusive": False,

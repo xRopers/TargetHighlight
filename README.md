@@ -40,3 +40,7 @@ git push origin v0.2.0
 ## How it works
 
 When something is targeted, the game sets the model's `CharacterBase.Tint` RGB to 10 and eases it back to 1 over about 40 frames. The shader squares the tint into its colour multiplier. Every tint write goes through `CharacterBase.SetTint`, which this plugin hooks to block the flash or replace it with the custom colour and fade.
+
+## License
+
+TargetHighlight is licensed under the [GNU Affero General Public License v3.0 or later](LICENSE).

@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 
-namespace TargetHighlight;
+namespace TargetHighlight.Game;
 
 /// <summary>
 /// Finds CharacterBase.SetTint (vf24 on 2026.10.06) without hardcoding its address, slot or the Tint offset.

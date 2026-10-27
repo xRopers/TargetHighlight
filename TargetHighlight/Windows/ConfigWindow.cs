@@ -4,8 +4,10 @@ using System.Numerics;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
+using TargetHighlight.Services;
+using TargetHighlight.Utils;
 
-namespace TargetHighlight;
+namespace TargetHighlight.Windows;
 
 public sealed class ConfigWindow : Window
 {
@@ -197,7 +199,7 @@ public sealed class ConfigWindow : Window
         // Don't overwrite the text while it is being typed.
         if (config.Color != hexSource && !hexEditing)
         {
-            hexBuffer = $"#{ToByte(config.Color.X):X2}{ToByte(config.Color.Y):X2}{ToByte(config.Color.Z):X2}";
+            hexBuffer = $"#{ColorConversion.ToByte(config.Color.X):X2}{ColorConversion.ToByte(config.Color.Y):X2}{ColorConversion.ToByte(config.Color.Z):X2}";
             hexSource = config.Color;
         }
 
@@ -222,12 +224,12 @@ public sealed class ConfigWindow : Window
         // Keep HSV as our own state so hue survives grey colours (saturation or value 0), where RGB has no hue.
         if (config.Color != hsvSource)
         {
-            var (h, s, v) = RgbToHsv(config.Color);
+            var (h, s, v) = ColorConversion.RgbToHsv(config.Color);
             hsv = new Vector3(s == 0f || v == 0f ? hsv.X : h, v == 0f ? hsv.Y : s, v);
             hsvSource = config.Color;
         }
 
-        var rgb = new[] { ToByte(config.Color.X), ToByte(config.Color.Y), ToByte(config.Color.Z) };
+        var rgb = new[] { ColorConversion.ToByte(config.Color.X), ColorConversion.ToByte(config.Color.Y), ColorConversion.ToByte(config.Color.Z) };
         var hsvInts = new[] { (int)MathF.Round(hsv.X * 360f), (int)MathF.Round(hsv.Y * 100f), (int)MathF.Round(hsv.Z * 100f) };
         string[] rgbLabels = ["R", "G", "B"];
         string[] hsvLabels = ["H", "S", "V"];
@@ -256,7 +258,7 @@ public sealed class ConfigWindow : Window
         if (hsvChanged)
         {
             hsv = new Vector3(hsvInts[0] / 360f, hsvInts[1] / 100f, hsvInts[2] / 100f);
-            config.Color = HsvToRgb(hsv);
+            config.Color = ColorConversion.HsvToRgb(hsv);
             hsvSource = config.Color;
             return true;
         }
@@ -491,48 +493,5 @@ public sealed class ConfigWindow : Window
         ImGui.TextColored(Accent, title);
         ImGui.Separator();
         ImGui.Spacing();
-    }
-
-    private static int ToByte(float channel) => (int)MathF.Round(Math.Clamp(channel, 0f, 1f) * 255f);
-
-    private static (float H, float S, float V) RgbToHsv(Vector3 rgb)
-    {
-        var max = MathF.Max(rgb.X, MathF.Max(rgb.Y, rgb.Z));
-        var min = MathF.Min(rgb.X, MathF.Min(rgb.Y, rgb.Z));
-        var delta = max - min;
-
-        var h = 0f;
-        if (delta > 0f)
-        {
-            if (max == rgb.X)
-                h = (rgb.Y - rgb.Z) / delta % 6f;
-            else if (max == rgb.Y)
-                h = (rgb.Z - rgb.X) / delta + 2f;
-            else
-                h = (rgb.X - rgb.Y) / delta + 4f;
-            h /= 6f;
-            if (h < 0f)
-                h += 1f;
-        }
-
-        return (h, max == 0f ? 0f : delta / max, max);
-    }
-
-    private static Vector3 HsvToRgb(Vector3 hsv)
-    {
-        var h = hsv.X % 1f * 6f;
-        var c = hsv.Z * hsv.Y;
-        var x = c * (1f - MathF.Abs(h % 2f - 1f));
-        var m = hsv.Z - c;
-        var (r, g, b) = (int)h switch
-        {
-            0 => (c, x, 0f),
-            1 => (x, c, 0f),
-            2 => (0f, c, x),
-            3 => (0f, x, c),
-            4 => (x, 0f, c),
-            _ => (c, 0f, x),
-        };
-        return new Vector3(r + m, g + m, b + m);
     }
 }

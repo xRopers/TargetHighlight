@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TargetHighlight", "TargetHighlight.csproj", "{6B1E2F3A-5C4D-4E8F-9A0B-1C2D3E4F5A6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TargetHighlight", "TargetHighlight\TargetHighlight.csproj", "{6B1E2F3A-5C4D-4E8F-9A0B-1C2D3E4F5A6B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

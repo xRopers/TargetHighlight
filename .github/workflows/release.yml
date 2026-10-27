@@ -40,7 +40,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${{ github.ref_name }}" bin/x64/Release/TargetHighlight/latest.zip `
+          gh release create "${{ github.ref_name }}" TargetHighlight/bin/x64/Release/TargetHighlight/latest.zip `
             --title "TargetHighlight ${{ github.ref_name }}" --generate-notes
 
       - name: Update repo.json on main

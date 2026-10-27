@@ -1,0 +1,36 @@
+# Checks that the plugin builds on every push to main and every pull request.
+# Releases are handled separately by release.yml when a version tag is pushed.
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Download Dalamud dev files
+        shell: pwsh
+        run: |
+          $dir = Join-Path $env:RUNNER_TEMP "dalamud"
+          Invoke-WebRequest https://goatcorp.github.io/dalamud-distrib/latest.zip -OutFile "$dir.zip"
+          Expand-Archive "$dir.zip" -DestinationPath $dir
+          "DALAMUD_HOME=$dir" >> $env:GITHUB_ENV
+
+      - name: Build
+        run: dotnet build TargetHighlight.sln -c Release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TargetHighlight
+          path: TargetHighlight/bin/x64/Release/TargetHighlight/latest.zip
+          if-no-files-found: error

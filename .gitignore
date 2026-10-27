@@ -1,4 +1,18 @@
+# Build output
 bin/
 obj/
+
+# IDEs
 .vs/
+.idea/
+.vscode/
 *.user
+*.suo
+*.DotSettings.user
+
+# Python
+__pycache__/
+
+# OS
+Thumbs.db
+.DS_Store

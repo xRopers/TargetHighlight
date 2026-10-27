@@ -2,7 +2,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using SceneObject = FFXIVClientStructs.FFXIV.Client.Graphics.Scene.Object;
 using SceneObjectType = FFXIVClientStructs.FFXIV.Client.Graphics.Scene.ObjectType;
 
-namespace TargetHighlight;
+namespace TargetHighlight.Game;
 
 public static unsafe class GameObjects
 {

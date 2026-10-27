@@ -28,6 +28,36 @@ This changes the target flash, not the coloured outline highlight. It is purely 
 | `/targethighlight custom` | Custom flash |
 | `/targethighlight preview` | Play the custom flash on your current target |
 
+## Building
+
+Requirements:
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- XIVLauncher with Dalamud installed and run at least once, so the development files exist in `%AppData%\XIVLauncher\addon\Hooks\dev\`. Set the `DALAMUD_HOME` environment variable to build against Dalamud somewhere else.
+
+```
+dotnet build TargetHighlight.sln -c Release
+```
+
+The build writes `TargetHighlight/bin/x64/Release/TargetHighlight.dll` with its manifest, plus a packaged `TargetHighlight/bin/x64/Release/TargetHighlight/latest.zip`. To load your own build, add the full path to the DLL under Dev Plugin Locations in `/xlsettings` → **Experimental**.
+
+## Project layout
+
+```
+TargetHighlight/
+  Plugin.cs                          Entry point: Dalamud services, settings window and /targethighlight
+  Configuration.cs                   Saved settings (with FlashMode.cs and FadeCurve.cs)
+  Game/GameObjects.cs                Safely gets a target's character model
+  Game/SetTintResolver.cs            Finds CharacterBase.SetTint through ClientStructs
+  Services/TargetFlashController.cs  The SetTint hook that blocks or replaces the flash
+  Services/FlashRecorder.cs          Diagnostics recorder for checking the flash after a game patch
+  Utils/ColorConversion.cs           RGB/HSV helpers for the colour fields
+  Windows/ConfigWindow.cs            Settings window
+images/                              Plugin icon (referenced by the manifest's IconUrl)
+scripts/                             Icon generator and the repo.json updater used by the release workflow
+repo.json                            Custom plugin repository feed
+```
+
 ## Releasing
 
 Push a version tag. The [Release workflow](.github/workflows/release.yml) builds the plugin, publishes `latest.zip` as a GitHub release and updates `repo.json` on `main`:

@@ -1,7 +1,7 @@
 """Writes repo.json (the Dalamud custom repository feed) from the manifest DalamudPackager produced.
 
 Usage: python scripts/update_repo_json.py <tag>    e.g. v0.2.0
-Run after a Release build; reads bin/x64/Release/TargetHighlight/TargetHighlight.json.
+Run after a Release build; reads TargetHighlight/bin/x64/Release/TargetHighlight/TargetHighlight.json.
 """
 import json
 import sys
@@ -10,7 +10,7 @@ from pathlib import Path
 
 REPO = "xRopers/TargetHighlight"
 ROOT = Path(__file__).resolve().parent.parent
-MANIFEST = ROOT / "bin" / "x64" / "Release" / "TargetHighlight" / "TargetHighlight.json"
+MANIFEST = ROOT / "TargetHighlight" / "bin" / "x64" / "Release" / "TargetHighlight" / "TargetHighlight.json"
 REPO_JSON = ROOT / "repo.json"
 ICON_URL = f"https://raw.githubusercontent.com/{REPO}/main/images/icon.png"
 

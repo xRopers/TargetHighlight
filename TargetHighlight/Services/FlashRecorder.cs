@@ -7,9 +7,10 @@ using System.Text;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
+using TargetHighlight.Game;
 using Character = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
-namespace TargetHighlight;
+namespace TargetHighlight.Services;
 
 /// <summary>
 /// Diagnostic: when the target changes, snapshots the target's GameObject and DrawObject memory every frame,

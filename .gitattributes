@@ -1,0 +1,8 @@
+# Normalise line endings in the repository; checkouts use the platform's native endings
+* text=auto
+
+*.cs diff=csharp
+*.py diff=python
+*.sln text eol=crlf
+*.csproj text eol=crlf
+*.png binary

@@ -5,8 +5,9 @@ using System.Numerics;
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
+using TargetHighlight.Game;
 
-namespace TargetHighlight;
+namespace TargetHighlight.Services;
 
 /// <summary>
 /// When something is targeted, the game sets the model's CharacterBase.Tint RGB to 10 and eases it back to 1 over

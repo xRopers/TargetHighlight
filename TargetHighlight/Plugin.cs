@@ -6,6 +6,8 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Newtonsoft.Json;
+using TargetHighlight.Services;
+using TargetHighlight.Windows;
 
 namespace TargetHighlight;
 
